@@ -1,0 +1,73 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site, about } from '../data/site';
+import { projects } from '../data/projects';
+
+const portrait = projects[0]?.cover;
+---
+
+<Layout title="About" description={about.paragraphs[0]}>
+  <section class="section container about">
+    <div class="about__intro">
+      <p class="eyebrow reveal">About</p>
+      <h1 class="reveal">{site.name}</h1>
+      <p class="lead reveal" style="margin-top:1.25rem;">{site.heroLine}</p>
+    </div>
+
+    <div class="about__body">
+      {portrait && (
+        <figure class="about__portrait reveal">
+          <img src={portrait} alt={`Portrait of ${site.name}`} loading="lazy" decoding="async" />
+        </figure>
+      )}
+
+      <div class="about__text">
+        {about.paragraphs.map((para) => <p class="reveal">{para}</p>)}
+
+        <div class="about__services reveal">
+          <p class="eyebrow">What I do</p>
+          <ul>
+            {about.services.map((s) => <li>{s}</li>)}
+          </ul>
+        </div>
+
+        <p class="reveal" style="margin-top:2rem;">
+          <a class="btn" href={`mailto:${site.email}`}>Work with me</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .about__intro { max-width: 760px; margin-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+  .about__intro h1 { font-size: clamp(2.5rem, 7vw, 4.5rem); margin-top: 0.75rem; }
+
+  .about__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+  @media (min-width: 860px) {
+    .about__body { grid-template-columns: 0.9fr 1.1fr; align-items: start; }
+    .about__portrait { position: sticky; top: 100px; }
+  }
+  .about__portrait { margin: 0; overflow: hidden; aspect-ratio: 4 / 5; background: var(--bg-soft); }
+  .about__portrait img { width: 100%; height: 100%; object-fit: cover; }
+
+  .about__text p { color: var(--ink-soft); max-width: 56ch; margin-block: 0 1.25rem; }
+  .about__text p:first-child { color: var(--ink); font-size: 1.1rem; }
+
+  .about__services { margin-top: 2.5rem; }
+  .about__services ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.75rem 0 0;
+    border-top: 1px solid var(--line);
+  }
+  .about__services li {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 1.05rem;
+  }
+</style>

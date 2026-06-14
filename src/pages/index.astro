@@ -1,0 +1,142 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+import { projects } from '../data/projects';
+import type { PhotoSize, PhotoAlign } from '../data/projects';
+
+const bySlug = Object.fromEntries(projects.map((p) => [p.slug, p]));
+
+// A hand-curated opening sequence — the rhythm of sizes is intentional.
+const curated: { slug: string; index: number; size: PhotoSize; align: PhotoAlign }[] = [
+  { slug: 'far-roads', index: 0, size: 'full', align: 'center' },
+  { slug: 'still-light', index: 1, size: 'medium', align: 'left' },
+  { slug: 'city-grain', index: 2, size: 'small', align: 'right' },
+  { slug: 'still-light', index: 3, size: 'large', align: 'center' },
+  { slug: 'far-roads', index: 2, size: 'medium', align: 'right' },
+  { slug: 'city-grain', index: 1, size: 'full', align: 'center' },
+  { slug: 'still-light', index: 0, size: 'medium', align: 'left' },
+  { slug: 'far-roads', index: 5, size: 'full', align: 'center' },
+];
+
+const flow = curated
+  .map((c) => {
+    const project = bySlug[c.slug];
+    const photo = project?.photos[c.index];
+    if (!project || !photo) return null;
+    return { ...c, photo, title: project.title, category: project.category };
+  })
+  .filter((x): x is NonNullable<typeof x> => x !== null);
+---
+
+<Layout>
+  <section class="container intro">
+    <p class="eyebrow reveal">{site.role} · {site.location}</p>
+    <h1 class="intro__title reveal">{site.heroLine}</h1>
+    <p class="intro__text reveal">{site.intro}</p>
+  </section>
+
+  <section class="container flow-section">
+    <div class="flow">
+      {
+        flow.map((item, i) => (
+          <a
+            class={`flow-item flow-item--${item.size} flow-item--${item.align} reveal`}
+            href={`/projects/${item.slug}`}
+            aria-label={`${item.title} — ${item.category}`}
+          >
+            <img
+              src={item.photo.src}
+              alt={item.photo.alt}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+            />
+            <span class="flow-item__cap">
+              <em>{item.title}</em>
+              <span>{item.category}</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+
+    <p class="flow-section__more reveal">
+      <a class="btn" href="/projects">All projects</a>
+    </p>
+  </section>
+</Layout>
+
+<style>
+  .intro {
+    padding-block: clamp(3.5rem, 11vw, 8rem) clamp(2.5rem, 7vw, 5rem);
+    max-width: 1000px;
+  }
+  .intro__title {
+    font-size: clamp(2.4rem, 7vw, 5.5rem);
+    font-weight: 400;
+    margin-block: 1rem 1.5rem;
+    max-width: 18ch;
+  }
+  .intro__text {
+    color: var(--ink-soft);
+    max-width: 54ch;
+    font-size: clamp(1rem, 1.5vw, 1.12rem);
+  }
+
+  /* Editorial scroll: varied sizes + alignment, lots of breathing room. */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(3.5rem, 11vw, 11rem);
+  }
+
+  .flow-item { display: block; }
+  .flow-item img {
+    width: 100%;
+    height: auto;
+    background: var(--bg-soft);
+    transition: opacity 0.6s var(--ease), filter 0.6s var(--ease);
+  }
+  .flow-item:hover img { opacity: 0.86; }
+
+  .flow-item__cap {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-top: 1rem;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+  }
+  .flow-item:hover .flow-item__cap { opacity: 1; transform: none; }
+  .flow-item__cap em {
+    font-style: normal;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+  }
+  .flow-item__cap span {
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .flow-item--full { width: 100%; }
+  .flow-item--large { width: min(100%, 1040px); }
+  .flow-item--medium { width: min(72%, 680px); }
+  .flow-item--small { width: min(48%, 440px); }
+
+  .flow-item--left { margin-right: auto; }
+  .flow-item--center { margin-inline: auto; }
+  .flow-item--right { margin-left: auto; }
+
+  .flow-section__more { margin-top: clamp(3rem, 9vw, 7rem); }
+
+  @media (max-width: 720px) {
+    .flow { gap: clamp(2.5rem, 12vw, 5rem); }
+    .flow-item--full,
+    .flow-item--large,
+    .flow-item--medium,
+    .flow-item--small { width: 100%; margin-inline: 0; }
+    .flow-item__cap { opacity: 1; transform: none; }
+  }
+</style>

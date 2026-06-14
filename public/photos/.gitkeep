@@ -1,0 +1,2 @@
+# Put your photo folders here, e.g. public/photos/still-light/photo-01.jpg
+# Then reference them in src/data/projects.ts as /photos/still-light/photo-01.jpg

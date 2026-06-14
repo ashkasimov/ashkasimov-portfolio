@@ -1,0 +1,163 @@
+---
+import type { Photo } from '../data/projects';
+
+interface Props {
+  photos: Photo[];
+}
+const { photos } = Astro.props;
+---
+
+<section class="hseq" aria-label="Project gallery">
+  <div
+    class="hseq__track"
+    tabindex="0"
+    role="region"
+    aria-label="Image gallery — scroll left and right to view"
+  >
+    {
+      photos.map((p, i) => (
+        <figure class={`hseq__item hseq__item--${p.size ?? 'large'}`}>
+          <img
+            src={p.src}
+            alt={p.alt}
+            loading={i === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+          />
+          {p.caption && <figcaption>{p.caption}</figcaption>}
+        </figure>
+      ))
+    }
+    <span class="hseq__tail" aria-hidden="true"></span>
+  </div>
+  <div class="hseq__hint" aria-hidden="true">scroll →</div>
+</section>
+
+<style>
+  .hseq {
+    position: relative;
+  }
+
+  /* The horizontal scroll track — a row of images, full-ish viewport height. */
+  .hseq__track {
+    display: flex;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 6rem);
+    height: 90vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-inline: clamp(1.5rem, 4vw, 4rem);
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    /* Hide scrollbar but keep scrollability. */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    outline: none;
+  }
+  .hseq__track::-webkit-scrollbar { display: none; }
+
+  .hseq__item {
+    margin: 0;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Height is the consistent dimension; width follows natural aspect ratio.
+     `size` is reinterpreted as relative HEIGHT/scale to create rhythm. */
+  .hseq__item img {
+    height: var(--h, 72vh);
+    width: auto;
+    max-width: none;
+    background: var(--bg-soft);
+    object-fit: cover;
+  }
+
+  .hseq__item--full   { --h: 85vh; }
+  .hseq__item--large  { --h: 72vh; }
+  .hseq__item--medium { --h: 58vh; }
+  .hseq__item--small  { --h: 44vh; }
+
+  .hseq__item figcaption {
+    margin-top: 0.9rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    max-width: 32ch;
+  }
+
+  /* A little breathing room at the end of the track. */
+  .hseq__tail {
+    flex: 0 0 clamp(1.5rem, 4vw, 4rem);
+    height: 1px;
+  }
+
+  /* Subtle hint that the row scrolls sideways. */
+  .hseq__hint {
+    position: absolute;
+    right: clamp(1.5rem, 4vw, 4rem);
+    bottom: 0.5rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    pointer-events: none;
+    animation: hseq-nudge 2.4s var(--ease) infinite;
+  }
+
+  @keyframes hseq-nudge {
+    0%, 100% { transform: translateX(0); opacity: 0.55; }
+    50% { transform: translateX(6px); opacity: 1; }
+  }
+
+  @media (max-width: 720px) {
+    .hseq__track { height: 74vh; gap: clamp(1.5rem, 7vw, 3rem); }
+    .hseq__item--full   { --h: 66vh; }
+    .hseq__item--large  { --h: 58vh; }
+    .hseq__item--medium { --h: 50vh; }
+    .hseq__item--small  { --h: 40vh; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hseq__track { scroll-behavior: auto; }
+    .hseq__hint { animation: none; }
+  }
+</style>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tracks = document.querySelectorAll<HTMLElement>('.hseq__track');
+
+  tracks.forEach((track) => {
+    // Translate predominantly-vertical wheel into horizontal scroll, but don't
+    // trap the page scroll: when at either end, let the wheel bubble normally.
+    track.addEventListener(
+      'wheel',
+      (e: WheelEvent) => {
+        if (Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; // native horizontal
+        const atStart = track.scrollLeft <= 0;
+        const atEnd =
+          Math.ceil(track.scrollLeft + track.clientWidth) >= track.scrollWidth;
+        if ((e.deltaY < 0 && atStart) || (e.deltaY > 0 && atEnd)) return;
+        e.preventDefault();
+        track.scrollLeft += e.deltaY;
+      },
+      { passive: false }
+    );
+
+    // Keyboard support when the track is focused.
+    track.addEventListener('keydown', (e: KeyboardEvent) => {
+      const step = track.clientWidth * 0.8;
+      const behavior: ScrollBehavior = reduce ? 'auto' : 'smooth';
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        track.scrollBy({ left: step, behavior });
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        track.scrollBy({ left: -step, behavior });
+      }
+    });
+  });
+</script>
