@@ -65,10 +65,15 @@ h1, h2, h3, h4 {
   flex-direction: column;
   justify-content: space-between;
   padding: clamp(1.5rem, 2.5vw, 2.25rem);
-  border-right: 1px solid var(--line);
-  background: var(--bg);
   z-index: 50;
+  /* Transparent overlay. mix-blend-difference keeps the white text legible
+     over both the light pages and the photographs it floats above. */
+  background: transparent;
+  color: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
 }
+.sidebar a { pointer-events: auto; }
 
 .sidebar__brand {
   font-family: var(--font-display);
@@ -83,7 +88,8 @@ h1, h2, h3, h4 {
   font-size: 0.62rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--ink-soft);
+  color: inherit;
+  opacity: 0.55;
   margin-top: 0.6rem;
 }
 
@@ -97,21 +103,20 @@ h1, h2, h3, h4 {
   text-transform: uppercase;
 }
 .sidebar__nav a {
-  color: var(--ink-soft);
+  color: inherit;
+  opacity: 0.5;
   width: fit-content;
-  transition: color 0.3s var(--ease), letter-spacing 0.3s var(--ease);
+  transition: opacity 0.3s var(--ease), letter-spacing 0.3s var(--ease);
 }
-.sidebar__nav a:hover { color: var(--ink); letter-spacing: 0.22em; }
-.sidebar__nav a[aria-current='page'] { color: var(--ink); }
-.sidebar__nav a[aria-current='page']::before {
-  content: '— ';
-  color: var(--accent);
-}
+.sidebar__nav a:hover { opacity: 1; letter-spacing: 0.22em; }
+.sidebar__nav a[aria-current='page'] { opacity: 1; }
+.sidebar__nav a[aria-current='page']::before { content: '— '; }
 
-.sidebar__foot { font-size: 0.72rem; color: var(--ink-soft); }
+.sidebar__foot { font-size: 0.72rem; color: inherit; opacity: 0.55; }
 .sidebar__socials { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-bottom: 0.9rem; }
-.sidebar__socials a { transition: color 0.3s var(--ease); }
-.sidebar__socials a:hover { color: var(--ink); }
+.sidebar__socials a { transition: opacity 0.3s var(--ease); }
+.sidebar__foot:hover { opacity: 0.8; }
+.sidebar__socials a:hover { opacity: 1; }
 
 .content {
   margin-left: var(--sidebar-w);
@@ -140,11 +145,17 @@ main { flex: 1; }
     align-items: center;
     justify-content: space-between;
     padding: 0.9rem clamp(1.25rem, 5vw, 2rem);
-    border-right: none;
     border-bottom: 1px solid var(--line);
     background: color-mix(in srgb, var(--bg) 88%, transparent);
     backdrop-filter: blur(10px);
+    /* On mobile use a normal legible bar, not the blended overlay. */
+    mix-blend-mode: normal;
+    color: var(--ink);
+    pointer-events: auto;
   }
+  .sidebar__nav a { opacity: 0.65; }
+  .sidebar__nav a:hover,
+  .sidebar__nav a[aria-current='page'] { opacity: 1; }
   .sidebar__brand { font-size: 1.25rem; }
   .sidebar__brand small { display: none; }
   .sidebar__nav {

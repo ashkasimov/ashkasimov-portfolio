@@ -11,8 +11,6 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const idx = projects.findIndex((p) => p.slug === project.slug);
-const next = projects[(idx + 1) % projects.length];
 ---
 
 <Layout title={project.title} description={project.summary}>
@@ -28,39 +26,13 @@ const next = projects[(idx + 1) % projects.length];
     </div>
 
     <Sequence photos={project.photos} />
-
-    {
-      next && next.slug !== project.slug && (
-        <div class="container">
-          <a class="next-project reveal" href={`/projects/${next.slug}`}>
-            <span class="eyebrow">Next project</span>
-            <span class="next-project__title">{next.title} →</span>
-          </a>
-        </div>
-      )
-    }
   </article>
 </Layout>
 
 <style>
-  .project { padding-block: clamp(3rem, 8vw, 6.5rem); }
-  .project-top { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+  .project { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+  .project-top { margin-bottom: clamp(1.5rem, 4vw, 2.5rem); }
   .back { display: inline-block; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 2rem; }
   .project-head { max-width: 720px; }
   .project-head h1 { font-size: clamp(2.6rem, 8vw, 5rem); margin-top: 0.75rem; }
-
-  .next-project {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: clamp(3rem, 8vw, 6rem);
-    padding-top: 2rem;
-    border-top: 1px solid var(--line);
-  }
-  .next-project__title {
-    font-family: var(--font-display);
-    font-size: clamp(2rem, 6vw, 3.5rem);
-    transition: transform 0.4s var(--ease);
-  }
-  .next-project:hover .next-project__title { transform: translateX(8px); }
 </style>
