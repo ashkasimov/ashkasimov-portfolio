@@ -15,6 +15,9 @@ node_modules/
 # local gh CLI auth (never commit — contains a token)
 .gh/
 
+# local working files (contact sheets, scratch)
+.thumbs/
+
 # macOS
 .DS_Store
 
