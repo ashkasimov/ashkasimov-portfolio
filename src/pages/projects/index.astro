@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { projects } from '../../data/projects';
+import { visibleProjects } from '../../data/projects';
 ---
 
 <Layout title="Work" description="Selected photography projects and galleries.">
@@ -12,7 +12,7 @@ import { projects } from '../../data/projects';
 
     <div class="project-list">
       {
-        projects.map((p, i) => (
+        visibleProjects.map((p, i) => (
           <a class="project-row reveal" href={`/projects/${p.slug}`} style={`transition-delay:${i * 70}ms`}>
             <div class="project-row__img">
               <img src={p.cover} alt={`${p.title} — cover`} loading="lazy" decoding="async" />
@@ -20,7 +20,7 @@ import { projects } from '../../data/projects';
             <div class="project-row__info">
               <h2>{p.title}</h2>
               <p class="project-row__summary">{p.summary}</p>
-              <span class="project-row__meta">{p.category} · {p.year} · {p.photos.length} photographs</span>
+              <span class="project-row__meta">{[p.category, p.year, `${p.photos.length} photographs`].filter(Boolean).join(' · ')}</span>
             </div>
             <span class="project-row__arrow" aria-hidden="true">→</span>
           </a>

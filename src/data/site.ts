@@ -7,15 +7,15 @@ export const site = {
   // Short tagline shown under the name in the header / hero.
   role: 'Photographer',
   // The big statement on the home page.
-  heroLine: 'Light, stillness, and the moments in between.',
+  heroLine: 'RISD · BFA Photography',
   // A one or two sentence intro used on the home + about pages.
   intro:
-    'I am a photographer drawn to quiet light and honest moments. My work moves between portraiture, landscape, and the small details most people walk past.',
-  location: 'Based worldwide',
+    'I came to photography from painting, looking for something more grounded — a reason to wander, look, and inquire.',
+  location: 'San Francisco',
   email: 'hi@ashkasimov.com',
   // Social links. Leave a value empty ('') to hide that link.
   socials: {
-    instagram: 'https://instagram.com/',
+    instagram: 'https://instagram.com/ashkasimov',
     behance: '',
     twitter: '',
     linkedin: '',
@@ -23,16 +23,16 @@ export const site = {
 };
 
 export const about = {
+  portrait: '/photos/about/portrait.jpg',
   // Longer biography paragraphs for the About page. Add or remove freely.
   paragraphs: [
-    'I picked up a camera to slow time down. What began as a way to remember turned into a way of seeing — paying attention to the way light falls across a face, the texture of an ordinary street, the pause before something happens.',
-    'My approach is patient and unforced. I would rather wait for a true moment than stage a perfect one. Whether I am photographing people, places, or the spaces between, I am looking for a feeling that lasts longer than the frame.',
-    'I work on commissioned portraits, editorial stories, and personal projects, and I am always open to collaborations that have something honest to say.',
+    'I came to photography from painting, looking for something more grounded — a reason to wander, look, and inquire. What I found instead was a tension I couldn\'t resolve: the documentary impulse to let the world author the image, and the directorial impulse to stage what the self needs to say. I no longer treat those as opposites. My work sits at the boundary between what is seen and what is projected.',
+    'In practice, that means editorial and documentary stories, portraiture, and sequenced bodies of work — made with the same attention whether the project is personal or commissioned. I\'m currently based in San Francisco, and open to assignments, collaborations, and long-form stories.',
   ],
   // What you offer / how you work with clients.
   services: [
-    'Portrait & editorial photography',
-    'Travel & documentary stories',
-    'Fine-art prints & licensing',
+    'Editorial & documentary photography',
+    'Portraiture & commissioned stories',
+    'Sequenced personal series & books',
   ],
 };

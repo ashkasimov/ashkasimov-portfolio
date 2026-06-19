@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { experience, tools } from '../data/experience';
+import { experience } from '../data/experience';
 import { site } from '../data/site';
 ---
 
@@ -25,17 +25,6 @@ import { site } from '../data/site';
         ))
       }
     </ol>
-
-    {
-      tools && tools.length > 0 && (
-        <div class="tools reveal">
-          <p class="eyebrow">Tools & approach</p>
-          <ul>
-            {tools.map((t) => <li>{t}</li>)}
-          </ul>
-        </div>
-      )
-    }
 
     <p class="reveal" style="margin-top:3rem;">
       <a class="btn" href={`mailto:${site.email}`}>Let's work together</a>
@@ -63,15 +52,6 @@ import { site } from '../data/site';
   .timeline__content h2 { font-size: clamp(1.5rem, 3.5vw, 2.1rem); }
   .timeline__org { color: var(--ink); margin: 0.25rem 0 0.5rem; font-weight: 500; }
   .timeline__desc { color: var(--ink-soft); max-width: 56ch; margin: 0; }
-
-  .tools { margin-top: clamp(3rem, 7vw, 5rem); }
-  .tools ul {
-    display: flex; flex-wrap: wrap; gap: 0.6rem; list-style: none; padding: 0; margin: 1rem 0 0;
-  }
-  .tools li {
-    border: 1px solid var(--line); border-radius: 999px;
-    padding: 0.5rem 1.1rem; font-size: 0.85rem; color: var(--ink-soft);
-  }
 
   @media (max-width: 640px) {
     .timeline__item { grid-template-columns: 1fr; gap: 0.5rem; }

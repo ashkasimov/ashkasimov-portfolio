@@ -1,9 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { site, about } from '../data/site';
-import { projects } from '../data/projects';
 
-const portrait = projects[0]?.cover;
+const portrait = about.portrait;
 ---
 
 <Layout title="About" description={about.paragraphs[0]}>

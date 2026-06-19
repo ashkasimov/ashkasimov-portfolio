@@ -3,22 +3,33 @@
 //
 // Each project is a SEQUENCE you scroll through. On project pages the gallery
 // scrolls horizontally; `size` controls each image's relative height/emphasis:
-//   size:  'full' | 'large' | 'medium' | 'small'
+//   size:  'full' | 'large' | 'medium' | 'small-plus' | 'small' | 'xsmall'
+//   space: 'wide' | 'extra-wide' — extra left margin before this panel (pacing pause)
 //   align: 'left' | 'center' | 'right'   (used on the vertical homepage)
 //
 // To reorder, just move lines around. To move a photo to another project,
 // cut its { ... } line into that project's photos array.
 // -----------------------------------------------------------------------------
 
-export type PhotoSize = 'full' | 'large' | 'medium' | 'small';
+export type PhotoSize = 'full' | 'large' | 'medium' | 'small-plus' | 'small' | 'xsmall';
 export type PhotoAlign = 'left' | 'center' | 'right';
+export type PhotoAlignV = 'bottom' | 'center';
+export type PhotoSpace = 'wide' | 'extra-wide';
 
 export type Photo = {
   src: string;
   alt: string;
   size?: PhotoSize;
   align?: PhotoAlign;
+  alignV?: PhotoAlignV;
   caption?: string;
+  // When true, this image sits tight against the PREVIOUS one, so the two read
+  // as a diptych (a reduced gap between them in the horizontal sequence).
+  pair?: boolean;
+  // Extra breathing room before this panel (does not apply when pair is true).
+  space?: PhotoSpace;
+  // Vertical nudge within the track (e.g. '-12vh') for optical diptych alignment.
+  offsetY?: string;
 };
 
 export type Project = {
@@ -29,45 +40,72 @@ export type Project = {
   summary: string;
   cover: string;
   photos: Photo[];
+  /** When true, omitted from Work list and project pages (data/files kept). */
+  hidden?: boolean;
 };
 
 export const projects: Project[] = [
   {
-    slug: 'there-is-a-field',
-    title: 'There Is a Field, I\'ll Meet You There',
-    year: '2019 — 2024',
-    category: 'Landscape',
+    slug: 'the-mindhouse',
+    title: 'The Mindhouse',
+    year: '2024–2026',
+    category: '',
     summary:
-      'Land, water, and small figures held inside vast space — a search for the place beyond right and wrong.',
-    cover: '/photos/there-is-a-field/01-45fd39df-f21e-453c-abbc-cfc707f6f936-rw.jpg',
+      'A walk through the rooms of the mind — the threshold where the outer world is taken in and warped into desire, fear, and fantasy. What we live is filtered through the rooms of our mind we have already built.',
+    cover: '/photos/the-mindhouse/01-glass.jpg',
     photos: [
-      { src: '/photos/there-is-a-field/01-45fd39df-f21e-453c-abbc-cfc707f6f936-rw.jpg', alt: 'There Is a Field, I\'ll Meet You There — 1', size: 'large' },
-      { src: '/photos/there-is-a-field/02-l1002367-1.jpg', alt: 'There Is a Field, I\'ll Meet You There — 2', size: 'full' },
-      { src: '/photos/there-is-a-field/03-kids-running-4.jpg', alt: 'There Is a Field, I\'ll Meet You There — 3', size: 'medium' },
-      { src: '/photos/there-is-a-field/04-8.jpg', alt: 'There Is a Field, I\'ll Meet You There — 4', size: 'large' },
-      { src: '/photos/there-is-a-field/05-img.jpg', alt: 'There Is a Field, I\'ll Meet You There — 5', size: 'small' },
-      { src: '/photos/there-is-a-field/06-the-sea.jpg', alt: 'There Is a Field, I\'ll Meet You There — 6', size: 'full' },
-      { src: '/photos/there-is-a-field/07-l1002622.jpg', alt: 'There Is a Field, I\'ll Meet You There — 7', size: 'medium' },
-      { src: '/photos/there-is-a-field/08-l1002634-1.jpg', alt: 'There Is a Field, I\'ll Meet You There — 8', size: 'large' },
-      { src: '/photos/there-is-a-field/09-dsf0158-1.jpg', alt: 'There Is a Field, I\'ll Meet You There — 9', size: 'medium' },
-      { src: '/photos/there-is-a-field/10-l1002627-1.jpg', alt: 'There Is a Field, I\'ll Meet You There — 10', size: 'small' },
-      { src: '/photos/there-is-a-field/11-dsf8276-nr-1.jpg', alt: 'There Is a Field, I\'ll Meet You There — 11', size: 'large' },
-      { src: '/photos/there-is-a-field/12-dsf2313.jpg', alt: 'There Is a Field, I\'ll Meet You There — 12', size: 'full' },
-      { src: '/photos/there-is-a-field/13-dsf3109-1.jpg', alt: 'There Is a Field, I\'ll Meet You There — 13', size: 'medium' },
-      { src: '/photos/there-is-a-field/14-dsf8551.jpg', alt: 'There Is a Field, I\'ll Meet You There — 14', size: 'large' },
-      { src: '/photos/there-is-a-field/15-20250221-105-nr.jpg', alt: 'There Is a Field, I\'ll Meet You There — 15', size: 'small' },
-      { src: '/photos/there-is-a-field/16-000068250003.jpg', alt: 'There Is a Field, I\'ll Meet You There — 16', size: 'full' },
-      { src: '/photos/there-is-a-field/17-000068230005.jpg', alt: 'There Is a Field, I\'ll Meet You There — 17', size: 'medium' },
-      { src: '/photos/there-is-a-field/18-img-1072.jpg', alt: 'There Is a Field, I\'ll Meet You There — 18', size: 'large' },
+      { src: '/photos/the-mindhouse/01-glass.jpg', alt: 'The Mindhouse — glass and ruin', size: 'full' },
+      { src: '/photos/the-mindhouse/02-face-041.jpg', alt: 'The Mindhouse — a face, left panel', size: 'small' },
+      { src: '/photos/the-mindhouse/03-face-7.jpg', alt: 'The Mindhouse — a face, right panel', size: 'small', pair: true },
+      { src: '/photos/the-mindhouse/04-blindfold-2.jpg', alt: 'The Mindhouse — blindfolded figure', size: 'full' },
+      { src: '/photos/the-mindhouse/05-dsc6786-1.jpg', alt: 'The Mindhouse — portrait', size: 'medium' },
+      { src: '/photos/the-mindhouse/06-insects-1.jpg', alt: 'The Mindhouse — the marked wall', size: 'medium' },
+      { src: '/photos/the-mindhouse/07-L3A5701.jpg', alt: 'The Mindhouse — the bed, left panel', size: 'full' },
+      { src: '/photos/the-mindhouse/08-L3A5746.jpg', alt: 'The Mindhouse — the bed, right panel', size: 'small', pair: true },
+      { src: '/photos/the-mindhouse/09-dsf0265.jpg', alt: 'The Mindhouse — threshold in the ruin', size: 'small' },
+      { src: '/photos/the-mindhouse/10-dsf3109-1.jpg', alt: 'The Mindhouse — figure in the woods', size: 'full' },
+      { src: '/photos/the-mindhouse/11-9.jpg', alt: 'The Mindhouse — the empty room, left panel', size: 'medium' },
+      { src: '/photos/the-mindhouse/12-45f9137b-rw.jpg', alt: 'The Mindhouse — the body, right panel', size: 'medium', pair: true },
+      { src: '/photos/the-mindhouse/13-L3A5754.jpg', alt: 'The Mindhouse — combing hair', size: 'small' },
+      { src: '/photos/the-mindhouse/14-hair.jpg', alt: 'The Mindhouse — hair', size: 'full' },
+      { src: '/photos/the-mindhouse/15-dscf4617.jpg', alt: 'The Mindhouse — the weight of the body', size: 'medium' },
+      { src: '/photos/the-mindhouse/16-dsf0116.jpg', alt: 'The Mindhouse — a closing room', size: 'small' },
+    ],
+  },
+  {
+    slug: 'there-is-a-field',
+    title: 'There is a field, I\'ll meet you there',
+    year: '2025–2026',
+    category: '',
+    summary:
+      'In a field, against water, under open sky, landscape takes the body in without requiring it to be something more. Embraced in the environment it belongs to, the body opens up its deeper and truer layers.',
+    cover: '/photos/there-is-a-field/01-8.jpg',
+    photos: [
+      { src: '/photos/there-is-a-field/01-8.jpg', alt: 'Interior Landscape — threshold', size: 'small' },
+      { src: '/photos/there-is-a-field/02-45fd39df-f21e-453c-abbc-cfc707f6f936-rw.jpg', alt: 'Interior Landscape — the field, left panel', size: 'full' },
+      { src: '/photos/there-is-a-field/03-the-sea.jpg', alt: 'Interior Landscape — the sea, right panel', size: 'full', pair: true },
+      { src: '/photos/there-is-a-field/04-dscf3760.jpg', alt: 'Interior Landscape — the figure as land', size: 'xsmall', space: 'wide' },
+      { src: '/photos/there-is-a-field/05-l1002634-1.jpg', alt: 'Interior Landscape — horizon and land', size: 'full' },
+      { src: '/photos/there-is-a-field/06-dscf5962-2-edit.jpg', alt: 'Interior Landscape — the dissolving body', size: 'small', space: 'wide' },
+      { src: '/photos/there-is-a-field/07-carrpond-mitchell-seal.jpg', alt: 'Interior Landscape — body in water, left panel', size: 'medium', space: 'extra-wide' },
+      { src: '/photos/there-is-a-field/08-mitch-with-weird-hand.jpg', alt: 'Interior Landscape — body in water, right panel', size: 'medium', pair: true },
+      { src: '/photos/there-is-a-field/09-dsf0124-edit.jpg', alt: 'Interior Landscape — skin and weight', size: 'large', space: 'extra-wide' },
+      { src: '/photos/there-is-a-field/10-l1002367-1.jpg', alt: 'Interior Landscape — open country, left panel', size: 'medium', space: 'extra-wide' },
+      { src: '/photos/there-is-a-field/11-kids-running-4.jpg', alt: 'Interior Landscape — figures in vast space, right panel', size: 'medium', pair: true },
+      { src: '/photos/there-is-a-field/12-dsf0158-1.jpg', alt: 'Interior Landscape — land under open sky', size: 'full', space: 'wide' },
+      { src: '/photos/there-is-a-field/13-000068230005.jpg', alt: 'Interior Landscape — late light, left panel', size: 'xsmall' },
+      { src: '/photos/there-is-a-field/14-img-1072.jpg', alt: 'Interior Landscape — a closing horizon, right panel', size: 'xsmall', pair: true },
+      { src: '/photos/there-is-a-field/15-dsf8551.jpg', alt: 'Interior Landscape — the field returns', size: 'full', space: 'wide' },
+      { src: '/photos/there-is-a-field/16-20250221-105-nr.jpg', alt: 'Interior Landscape — held in the open', size: 'small' },
     ],
   },
   {
     slug: 'home-sweet-home',
     title: 'Home, Sweet Home',
-    year: '2025',
-    category: 'Documentary',
+    year: '2022–2025',
+    category: '',
     summary:
-      'A documentary of a place and the people who hold it together — tenderness amid hardship.',
+      'In 2022 I moved to Baku, Azerbaijan — my family\'s city, and in many ways a foreign one. Raised in Russia and displaced by war, I began to photograph extensively: the camera let me be witness and explorer at once, opening access to a culture through its streets, its people, and its taste.',
     cover: '/photos/home-sweet-home/01-20250221-037-1.jpg',
     photos: [
       { src: '/photos/home-sweet-home/01-20250221-037-1.jpg', alt: 'Home, Sweet Home — 1', size: 'large' },
@@ -81,16 +119,24 @@ export const projects: Project[] = [
       { src: '/photos/home-sweet-home/09-l1002986.jpg', alt: 'Home, Sweet Home — 9', size: 'medium' },
       { src: '/photos/home-sweet-home/10-l1002987.jpg', alt: 'Home, Sweet Home — 10', size: 'small' },
       { src: '/photos/home-sweet-home/11-l1003009.jpg', alt: 'Home, Sweet Home — 11', size: 'large' },
-      { src: '/photos/home-sweet-home/12-l1002951-2.jpg', alt: 'Home, Sweet Home — 12', size: 'full' },
-      { src: '/photos/home-sweet-home/13-dsf8111.jpg', alt: 'Home, Sweet Home — 13', size: 'medium' },
-      { src: '/photos/home-sweet-home/14-dsf0116.jpg', alt: 'Home, Sweet Home — 14', size: 'large' },
+      { src: '/photos/home-sweet-home/12-l1003004.jpg', alt: 'Home, Sweet Home — hands at the table', size: 'xsmall' },
+      { src: '/photos/home-sweet-home/13-l1002951-2.jpg', alt: 'Home, Sweet Home — 12', size: 'full' },
+      { src: '/photos/home-sweet-home/14-dsf8111.jpg', alt: 'Home, Sweet Home — 13', size: 'medium' },
+      { src: '/photos/home-sweet-home/15-dsf5563-2.jpg', alt: 'Home, Sweet Home — 21', size: 'medium', pair: true },
+      { src: '/photos/home-sweet-home/16-dsf3823.jpg', alt: 'Home, Sweet Home — 20', size: 'medium' },
+      { src: '/photos/home-sweet-home/17-20250221-032-1.jpg', alt: 'Home, Sweet Home — 16', size: 'full' },
+      { src: '/photos/home-sweet-home/18-20250221-035-1-2.jpg', alt: 'Home, Sweet Home — 17', size: 'medium' },
+      { src: '/photos/home-sweet-home/19-dsf8083.jpg', alt: 'Home, Sweet Home — 22', size: 'full' },
+      { src: '/photos/home-sweet-home/20-dsf8191.jpg', alt: 'Home, Sweet Home — Baku', size: 'small' },
+      { src: '/photos/home-sweet-home/21-20250221-025-2.jpg', alt: 'Home, Sweet Home — rooftops at dusk', size: 'large' },
     ],
   },
   {
     slug: 'an-unhidden-face',
     title: 'An Unhidden Face',
     year: '2020 — 2024',
-    category: 'Portrait',
+    category: '',
+    hidden: true,
     summary:
       'Portraits made in the moment a person stops performing and is simply, fully seen.',
     cover: '/photos/an-unhidden-face/01-ash03080404.jpg',
@@ -108,71 +154,26 @@ export const projects: Project[] = [
     ],
   },
   {
-    slug: 'the-body-remembers',
-    title: 'The Body Remembers',
-    year: '2021 — 2025',
-    category: 'Figure',
-    summary:
-      'The figure as landscape and memory — water, skin, weight, and the quiet of being.',
-    cover: '/photos/the-body-remembers/01-mitch-with-weird-hand.jpg',
-    photos: [
-      { src: '/photos/the-body-remembers/01-mitch-with-weird-hand.jpg', alt: 'The Body Remembers — 1', size: 'large' },
-      { src: '/photos/the-body-remembers/02-ash-04-150005.jpg', alt: 'The Body Remembers — 2', size: 'full' },
-      { src: '/photos/the-body-remembers/03-dsf8700.jpg', alt: 'The Body Remembers — 3', size: 'medium' },
-      { src: '/photos/the-body-remembers/04-e836785d-5ec2-4342-84b3-2c49a4dad27b-rw.jpg', alt: 'The Body Remembers — 4', size: 'large' },
-      { src: '/photos/the-body-remembers/05-dscf4617.jpg', alt: 'The Body Remembers — 5', size: 'small' },
-      { src: '/photos/the-body-remembers/06-dscf5962-2-edit.jpg', alt: 'The Body Remembers — 6', size: 'full' },
-      { src: '/photos/the-body-remembers/07-dsf0124-edit.jpg', alt: 'The Body Remembers — 7', size: 'medium' },
-      { src: '/photos/the-body-remembers/08-dscf3760.jpg', alt: 'The Body Remembers — 8', size: 'large' },
-      { src: '/photos/the-body-remembers/09-45f9137b-a439-4b39-a1d4-ba0cd87ae6f0-rw.jpg', alt: 'The Body Remembers — 9', size: 'medium' },
-      { src: '/photos/the-body-remembers/10-shadow2.jpg', alt: 'The Body Remembers — 10', size: 'small' },
-      { src: '/photos/the-body-remembers/11-dsf2361.jpg', alt: 'The Body Remembers — 11', size: 'large' },
-      { src: '/photos/the-body-remembers/12-carrpond-mitchell-seal.jpg', alt: 'The Body Remembers — 12', size: 'full' },
-      { src: '/photos/the-body-remembers/13-ellia.jpg', alt: 'The Body Remembers — 13', size: 'medium' },
-      { src: '/photos/the-body-remembers/14-800d21fe-74f9-4466-94e0-71f9bf88a250.jpg', alt: 'The Body Remembers — 14', size: 'large' },
-      { src: '/photos/the-body-remembers/15-hair.jpg', alt: 'The Body Remembers — 15', size: 'small' },
-    ],
-  },
-  {
     slug: 'rites-of-light',
-    title: 'Rites of Light',
-    year: '2022 — 2024',
-    category: 'Ritual',
+    title: 'Zen Mountain Monastery',
+    year: '2025–2026',
+    category: '',
     summary:
-      'Devotion, stillness, and ceremony — the sacred caught in falling light.',
+      'A documentary series. Zen Mountain Monastery, Catskill, NY. Devotion, discipline, and the daily rites of a community held by practice.',
     cover: '/photos/rites-of-light/01-meditation.jpg',
     photos: [
       { src: '/photos/rites-of-light/01-meditation.jpg', alt: 'Rites of Light — 1', size: 'large' },
       { src: '/photos/rites-of-light/02-dsf8873.jpg', alt: 'Rites of Light — 2', size: 'full' },
       { src: '/photos/rites-of-light/03-dsf8915.jpg', alt: 'Rites of Light — 3', size: 'medium' },
-      { src: '/photos/rites-of-light/04-dsf8830.jpg', alt: 'Rites of Light — 4', size: 'large' },
-      { src: '/photos/rites-of-light/05-caroline.jpg', alt: 'Rites of Light — 5', size: 'small' },
-      { src: '/photos/rites-of-light/06-dsf8879.jpg', alt: 'Rites of Light — 6', size: 'full' },
-      { src: '/photos/rites-of-light/07-000068250008.jpg', alt: 'Rites of Light — 7', size: 'medium' },
-    ],
-  },
-  {
-    slug: 'the-houses-we-leave-behind',
-    title: 'The Houses We Leave Behind',
-    year: '2021 — 2023',
-    category: 'Staged',
-    summary:
-      'Figures staged inside ruins and abandoned rooms — what remains after the people are gone.',
-    cover: '/photos/the-houses-we-leave-behind/01-9.jpg',
-    photos: [
-      { src: '/photos/the-houses-we-leave-behind/01-9.jpg', alt: 'The Houses We Leave Behind — 1', size: 'large' },
-      { src: '/photos/the-houses-we-leave-behind/02-dscf4946.jpg', alt: 'The Houses We Leave Behind — 2', size: 'full' },
-      { src: '/photos/the-houses-we-leave-behind/03-dscf5051-2.jpg', alt: 'The Houses We Leave Behind — 3', size: 'medium' },
-      { src: '/photos/the-houses-we-leave-behind/04-dscf5074.jpg', alt: 'The Houses We Leave Behind — 4', size: 'large' },
-      { src: '/photos/the-houses-we-leave-behind/05-dscf4582.jpg', alt: 'The Houses We Leave Behind — 5', size: 'small' },
-      { src: '/photos/the-houses-we-leave-behind/06-dscf4868.jpg', alt: 'The Houses We Leave Behind — 6', size: 'full' },
-      { src: '/photos/the-houses-we-leave-behind/07-blindfold-2.jpg', alt: 'The Houses We Leave Behind — 7', size: 'medium' },
-      { src: '/photos/the-houses-we-leave-behind/08-dsf0265.jpg', alt: 'The Houses We Leave Behind — 8', size: 'large' },
-      { src: '/photos/the-houses-we-leave-behind/09-l3a5729-1.jpg', alt: 'The Houses We Leave Behind — 9', size: 'medium' },
-      { src: '/photos/the-houses-we-leave-behind/10-dsf0115.jpg', alt: 'The Houses We Leave Behind — 10', size: 'small' },
-      { src: '/photos/the-houses-we-leave-behind/11-insects-1.jpg', alt: 'The Houses We Leave Behind — 11', size: 'large' },
-      { src: '/photos/the-houses-we-leave-behind/12-insects-32.jpg', alt: 'The Houses We Leave Behind — 12', size: 'full' },
-      { src: '/photos/the-houses-we-leave-behind/13-glass.jpg', alt: 'The Houses We Leave Behind — 13', size: 'medium' },
+      { src: '/photos/rites-of-light/04-dsf8842.jpg', alt: 'Rites of Light — ceremony in the hall', size: 'medium' },
+      { src: '/photos/rites-of-light/05-caroline.jpg', alt: 'Rites of Light — 5', size: 'full' },
+      { src: '/photos/rites-of-light/06-meditator-face.jpg', alt: 'Rites of Light — meditator at dusk', size: 'xsmall' },
+      { src: '/photos/rites-of-light/07-shrine-portrait.jpg', alt: 'Rites of Light — candle-lit shrine', size: 'xsmall', pair: true },
+      { src: '/photos/rites-of-light/08-dsf8879.jpg', alt: 'Rites of Light — 6', size: 'full' },
+      { src: '/photos/rites-of-light/09-dsf8830.jpg', alt: 'Rites of Light — 4', size: 'small' },
+      { src: '/photos/rites-of-light/10-000068250008.jpg', alt: 'Rites of Light — 7', size: 'medium' },
     ],
   },
 ];
+
+export const visibleProjects = projects.filter((p) => !p.hidden);

@@ -3,8 +3,12 @@ import type { Photo } from '../data/projects';
 
 interface Props {
   photos: Photo[];
+  title?: string;
+  category?: string;
+  year?: string;
+  summary?: string;
 }
-const { photos } = Astro.props;
+const { photos, title, category, year, summary } = Astro.props;
 ---
 
 <section class="hseq" aria-label="Project gallery">
@@ -15,8 +19,21 @@ const { photos } = Astro.props;
     aria-label="Image gallery — scroll left and right to view"
   >
     {
+      title && (
+        <div class="hseq__intro">
+          <a class="hseq__back link-underline" href="/projects">← Work</a>
+          <p class="eyebrow">{[category, year].filter(Boolean).join(' · ')}</p>
+          <h1>{title}</h1>
+          {summary && <p class="hseq__summary">{summary}</p>}
+        </div>
+      )
+    }
+    {
       photos.map((p, i) => (
-        <figure class={`hseq__item hseq__item--${p.size ?? 'large'}`}>
+        <figure
+          class={`hseq__item hseq__item--${p.size ?? 'large'}${p.pair ? ' hseq__item--pair' : ''}${p.alignV === 'bottom' ? ' hseq__item--align-bottom' : ''}${p.space === 'extra-wide' && !p.pair ? ' hseq__item--extra-wide' : ''}${p.space === 'wide' && !p.pair ? ' hseq__item--wide' : ''}`}
+          style={p.offsetY ? `--offset-y: ${p.offsetY}` : undefined}
+        >
           <img
             src={p.src}
             alt={p.alt}
@@ -41,11 +58,16 @@ const { photos } = Astro.props;
     margin-left: calc(-1 * var(--sidebar-w));
   }
 
-  /* The horizontal scroll track — a row of images, full viewport height. */
+  /* The horizontal scroll track — a row of images, full viewport height.
+     Spacing is applied as a per-item left margin (instead of `gap`) so that
+     diptych pairs can sit closer together than the normal rhythm. */
   .hseq__track {
+    --seq-gap: clamp(2rem, 5vw, 6rem);
+    --seq-gap-wide: clamp(3.5rem, 9vw, 10rem);
+    --seq-gap-extra-wide: clamp(6rem, 14vw, 16rem);
+    --seq-gap-tight: clamp(0.4rem, 0.9vw, 0.85rem);
     display: flex;
     align-items: center;
-    gap: clamp(2rem, 5vw, 6rem);
     height: 100vh;
     overflow-x: auto;
     overflow-y: hidden;
@@ -60,13 +82,56 @@ const { photos } = Astro.props;
   }
   .hseq__track::-webkit-scrollbar { display: none; }
 
-  .hseq__item {
-    margin: 0;
+  /* The title/description rides in the sequence like a first "panel". */
+  .hseq__intro {
     flex: 0 0 auto;
+    align-self: stretch;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    width: min(46rem, 86vw);
+    /* Clear the overlay menu on the left. */
+    padding-left: calc(var(--sidebar-w) + clamp(0.5rem, 1.5vw, 1.5rem));
+    padding-right: clamp(2rem, 4vw, 4rem);
   }
+  .hseq__back { font-size: 0.8rem; color: var(--ink-soft); margin-bottom: 1.75rem; }
+  .hseq__intro h1 {
+    font-size: clamp(2.4rem, 5vw, 4.25rem);
+    margin-top: 0.6rem;
+  }
+  .hseq__summary {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2vw, 1.9rem);
+    line-height: 1.3;
+    color: var(--ink-soft);
+    max-width: 32ch;
+    margin-top: 1.4rem;
+  }
+
+  .hseq__item {
+    margin: 0 0 0 var(--seq-gap);
+    flex: 0 0 auto;
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transform: translateY(var(--offset-y, 0));
+  }
+
+  /* Bottom-align within the track (e.g. diptych pairs of different heights). */
+  .hseq__item--align-bottom { align-self: flex-end; }
+
+  /* A paced pause — noticeably more air before this panel. */
+  .hseq__item--wide { margin-left: var(--seq-gap-wide); }
+
+  /* A longer breath — transitions between major sequence movements. */
+  .hseq__item--extra-wide { margin-left: var(--seq-gap-extra-wide); }
+
+  /* A diptych: pull this image tight against the previous one. */
+  .hseq__item--pair { margin-left: var(--seq-gap-tight); }
+
+  /* No leading margin before the very first panel in the track. */
+  .hseq__track > :first-child { margin-left: 0; }
 
   /* Height is the consistent dimension; width follows natural aspect ratio.
      `size` is reinterpreted as relative HEIGHT/scale to create rhythm. */
@@ -78,10 +143,12 @@ const { photos } = Astro.props;
     object-fit: cover;
   }
 
-  .hseq__item--full   { --h: 94vh; }
-  .hseq__item--large  { --h: 80vh; }
-  .hseq__item--medium { --h: 64vh; }
-  .hseq__item--small  { --h: 50vh; }
+  .hseq__item--full   { --h: 100vh; }
+  .hseq__item--large  { --h: 86vh; }
+  .hseq__item--medium { --h: 70vh; }
+  .hseq__item--small-plus { --h: 63vh; }
+  .hseq__item--small  { --h: 56vh; }
+  .hseq__item--xsmall { --h: 44vh; }
 
   .hseq__item figcaption {
     margin-top: 0.9rem;
@@ -119,14 +186,21 @@ const { photos } = Astro.props;
   /* On mobile the sidebar is a top bar, so don't break out of the layout. */
   @media (max-width: 880px) {
     .hseq { width: 100%; margin-left: 0; }
+    .hseq__intro {
+      width: 86vw;
+      padding-left: clamp(1.25rem, 5vw, 2rem);
+      padding-right: clamp(1.25rem, 5vw, 2rem);
+    }
   }
 
   @media (max-width: 720px) {
-    .hseq__track { height: 74vh; gap: clamp(1.5rem, 7vw, 3rem); }
+    .hseq__track { height: 74vh; --seq-gap: clamp(1.5rem, 7vw, 3rem); --seq-gap-wide: clamp(2.5rem, 12vw, 5.5rem); --seq-gap-extra-wide: clamp(4rem, 18vw, 9rem); }
     .hseq__item--full   { --h: 66vh; }
     .hseq__item--large  { --h: 58vh; }
     .hseq__item--medium { --h: 50vh; }
+    .hseq__item--small-plus { --h: 45vh; }
     .hseq__item--small  { --h: 40vh; }
+    .hseq__item--xsmall { --h: 32vh; }
   }
 
   @media (prefers-reduced-motion: reduce) {

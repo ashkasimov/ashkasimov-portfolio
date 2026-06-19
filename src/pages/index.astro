@@ -1,21 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { site } from '../data/site';
-import { projects } from '../data/projects';
+import { visibleProjects } from '../data/projects';
 import type { PhotoSize, PhotoAlign } from '../data/projects';
 
-const bySlug = Object.fromEntries(projects.map((p) => [p.slug, p]));
+const bySlug = Object.fromEntries(visibleProjects.map((p) => [p.slug, p]));
 
-// A hand-curated opening sequence — the rhythm of sizes is intentional.
+// A hand-curated opening sequence — one beat per visible project, rhythm of sizes intentional.
 const curated: { slug: string; index: number; size: PhotoSize; align: PhotoAlign }[] = [
-  { slug: 'there-is-a-field', index: 0, size: 'full', align: 'center' },
-  { slug: 'an-unhidden-face', index: 0, size: 'medium', align: 'left' },
-  { slug: 'the-body-remembers', index: 0, size: 'small', align: 'right' },
-  { slug: 'the-houses-we-leave-behind', index: 0, size: 'large', align: 'center' },
-  { slug: 'home-sweet-home', index: 0, size: 'medium', align: 'right' },
-  { slug: 'rites-of-light', index: 0, size: 'full', align: 'center' },
-  { slug: 'an-unhidden-face', index: 3, size: 'medium', align: 'left' },
-  { slug: 'there-is-a-field', index: 4, size: 'full', align: 'center' },
+  { slug: 'the-mindhouse', index: 0, size: 'full', align: 'center' },
+  { slug: 'there-is-a-field', index: 1, size: 'full', align: 'left' },
+  { slug: 'home-sweet-home', index: 1, size: 'full', align: 'right' },
+  { slug: 'rites-of-light', index: 1, size: 'full', align: 'center' },
+  { slug: 'the-mindhouse', index: 9, size: 'large', align: 'right' },
+  { slug: 'home-sweet-home', index: 16, size: 'full', align: 'left' },
 ];
 
 const flow = curated
@@ -23,7 +21,7 @@ const flow = curated
     const project = bySlug[c.slug];
     const photo = project?.photos[c.index];
     if (!project || !photo) return null;
-    return { ...c, photo, title: project.title, category: project.category };
+    return { ...c, photo, title: project.title, year: project.year };
   })
   .filter((x): x is NonNullable<typeof x> => x !== null);
 ---
@@ -42,7 +40,7 @@ const flow = curated
           <a
             class={`flow-item flow-item--${item.size} flow-item--${item.align} reveal`}
             href={`/projects/${item.slug}`}
-            aria-label={`${item.title} — ${item.category}`}
+            aria-label={`${item.title} — ${item.year}`}
           >
             <img
               src={item.photo.src}
@@ -52,7 +50,7 @@ const flow = curated
             />
             <span class="flow-item__cap">
               <em>{item.title}</em>
-              <span>{item.category}</span>
+              <span>{item.year}</span>
             </span>
           </a>
         ))
@@ -74,7 +72,7 @@ const flow = curated
     font-size: clamp(2.4rem, 7vw, 5.5rem);
     font-weight: 400;
     margin-block: 1rem 1.5rem;
-    max-width: 18ch;
+    max-width: 22ch;
   }
   .intro__text {
     color: var(--ink-soft);
