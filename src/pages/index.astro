@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { site } from '../data/site';
 import { visibleProjects } from '../data/projects';
 import type { PhotoSize, PhotoAlign } from '../data/projects';
 
@@ -27,12 +26,6 @@ const flow = curated
 ---
 
 <Layout>
-  <section class="container intro">
-    <p class="eyebrow reveal">{site.role} · {site.location}</p>
-    <h1 class="intro__title reveal">{site.heroLine}</h1>
-    <p class="intro__text reveal">{site.intro}</p>
-  </section>
-
   <section class="container flow-section">
     <div class="flow">
       {
@@ -64,20 +57,8 @@ const flow = curated
 </Layout>
 
 <style>
-  .intro {
-    padding-block: clamp(3.5rem, 11vw, 8rem) clamp(2.5rem, 7vw, 5rem);
-    max-width: 1000px;
-  }
-  .intro__title {
-    font-size: clamp(2.4rem, 7vw, 5.5rem);
-    font-weight: 400;
-    margin-block: 1rem 1.5rem;
-    max-width: 22ch;
-  }
-  .intro__text {
-    color: var(--ink-soft);
-    max-width: 54ch;
-    font-size: clamp(1rem, 1.5vw, 1.12rem);
+  .flow-section {
+    padding-block: clamp(3.5rem, 11vw, 8rem) 0;
   }
 
   /* Editorial scroll: varied sizes + alignment, lots of breathing room. */
